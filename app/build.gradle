@@ -20,4 +20,12 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    repositories {
+        maven {
+            url '../../myorepository'
+        }
+    }
+    compile 'com.android.support:support-v13:18.0.+'
+    compile 'com.thalmic:myosdk:0.2.+@aar'
+    compile 'de.greenrobot:eventbus:2.2.1'
 }
