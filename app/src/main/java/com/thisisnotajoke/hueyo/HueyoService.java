@@ -42,14 +42,8 @@ public class HueyoService extends Service {
         super.onCreate();
         mPrefUtils = PreferenceUtil.newInstance(getApplicationContext());
         //EventBusUtils.register(this);
-        mHub = Hub.getInstance();
-        if (!mHub.init(this)) {
-            Log.e(TAG, "Could not initialize the Hub.");
-            stopSelf();
-            return;
-        }
-        mHub.addListener(mMyoListener);
 
+        createMyo();
         createHue();
     }
 
@@ -60,10 +54,9 @@ public class HueyoService extends Service {
 
     @Override
     public void onDestroy() {
-        mHub.removeListener(mMyoListener);
-        mHub = null;
         //EventBusUtils.unregister(this);
 
+        destroyMyo();
         destroyHue();
         super.onDestroy();
     }
@@ -81,7 +74,8 @@ public class HueyoService extends Service {
     }
 
     public void pair() {
-        mHub.pairWithAdjacentMyo();
+        if(!isMyoConnected())
+            mHub.pairWithAdjacentMyo();
     }
 
     public void pairActivity(Context context) {
@@ -137,15 +131,32 @@ public class HueyoService extends Service {
         mHue = null;
     }
 
+    private void createMyo() {
+        mHub = Hub.getInstance();
+        if (!mHub.init(this)) {
+            Log.e(TAG, "Could not initialize the Hub.");
+            stopSelf();
+            return;
+        }
+        mHub.addListener(mMyoListener);
+        pair();
+    }
+
+    private void destroyMyo() {
+        mHub.removeListener(mMyoListener);
+        mHub = null;
+    }
+
+
     private DeviceListener mMyoListener = new AbstractDeviceListener() {
         @Override
         public void onConnect(Myo myo, long timestamp) {
-            EventBusUtils.post(new MyoEvent(myo));
+            EventBusUtils.postSticky(new MyoEvent(myo));
         }
 
         @Override
         public void onDisconnect(Myo myo, long timestamp) {
-            EventBusUtils.post(new MyoEvent(myo));
+            EventBusUtils.postSticky(new MyoEvent(myo));
         }
 
         @Override
@@ -168,7 +179,7 @@ public class HueyoService extends Service {
             mPrefUtils.setLastConnectedBridgeAddress(b.getResourceCache().getBridgeConfiguration().getIpAddress());
             mPrefUtils.setHueUsername(b.getResourceCache().getBridgeConfiguration().getUsername());
             Log.i(TAG, "Hue bridge connected");
-            EventBusUtils.post(new HueEvent(b, true));
+            EventBusUtils.postSticky(new HueEvent(b, true));
         }
 
         @Override
@@ -210,12 +221,12 @@ public class HueyoService extends Service {
 
         @Override
         public void onConnectionResumed(PHBridge bridge) {
-            EventBusUtils.post(new HueEvent(bridge, true));
+            EventBusUtils.postSticky(new HueEvent(bridge, true));
         }
 
         @Override
         public void onConnectionLost(PHAccessPoint accessPoints) {
-            EventBusUtils.post(new HueEvent(null, false));
+            EventBusUtils.postSticky(new HueEvent(null, false));
         }
 
     };

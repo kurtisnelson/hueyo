@@ -16,4 +16,12 @@ public class EventBusUtils {
     public static void post(Object event) {
         EventBus.getDefault().post(event);
     }
+
+    public static void postSticky(Object event) {
+        EventBus.getDefault().postSticky(event);
+    }
+
+    public static Object getSticky(Class theClass) {
+        return EventBus.getDefault().getStickyEvent(theClass);
+    }
 }

@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import de.greenrobot.event.EventBus;
+
 public class StatusFragment extends Fragment {
 
     private static final String TAG = "StatusFragment";
@@ -50,6 +52,9 @@ public class StatusFragment extends Fragment {
             setHueName(savedInstanceState.getString(STATE_HUE_NAME, null));
             mMyoStatus.setActive(savedInstanceState.getBoolean(STATE_MYO_ACTIVE, false));
             mHueStatus.setActive(savedInstanceState.getBoolean(STATE_HUE_ACTIVE, false));
+        }else {
+            onEventMainThread((MyoEvent) EventBusUtils.getSticky(MyoEvent.class));
+            onEventMainThread((HueEvent) EventBusUtils.getSticky(HueEvent.class));
         }
         return view;
     }
@@ -79,6 +84,8 @@ public class StatusFragment extends Fragment {
     }
 
     public void onEventMainThread(MyoEvent myoEvent) {
+        if(myoEvent == null)
+            return;
         Log.d(TAG, "MyoEvent: " + myoEvent.getAddress() + " " + myoEvent.getState());
         switch (myoEvent.getState()) {
             case CONNECTED:
@@ -99,6 +106,8 @@ public class StatusFragment extends Fragment {
     }
 
     public void onEventMainThread(HueEvent event) {
+        if(event == null)
+            return;
         if(event.isConnected()){
             mHueStatus.setActive(true);
             setHueName(event.getName());

@@ -8,7 +8,7 @@ public class HueEvent {
 
     public HueEvent(PHBridge bridge, boolean connected) {
         if(bridge != null) {
-            mName = bridge.getResourceCache().getBridgeConfiguration().getBridgeID();
+            mName = bridge.getResourceCache().getBridgeConfiguration().getIpAddress();
         }else{
             mName = null;
         }
