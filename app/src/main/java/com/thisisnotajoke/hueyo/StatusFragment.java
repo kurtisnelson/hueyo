@@ -1,5 +1,6 @@
 package com.thisisnotajoke.hueyo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -9,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.thalmic.myo.Pose;
 
 public class StatusFragment extends Fragment {
 
@@ -23,6 +26,7 @@ public class StatusFragment extends Fragment {
     private StatusView mMyoStatus;
     private StatusView mHueStatus;
     private TextView mHueName;
+    private TextView mLastCommandView;
 
     @Override
     public void onStart() {
@@ -35,11 +39,20 @@ public class StatusFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_status, container, false);
         mMyoStatus = (StatusView) view.findViewById(R.id.fragment_status_myo_status);
         mMyoAddressView = (TextView) view.findViewById(R.id.fragment_status_myo_address);
+        mLastCommandView = (TextView) view.findViewById(R.id.fragment_status_last_command);
         mTrainButton = (Button) view.findViewById(R.id.fragment_status_train);
         mTrainButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 HueyoService.train(getActivity(), mMyoMac);
+            }
+        });
+
+        Button stopButton = (Button) view.findViewById(R.id.fragment_status_stop);
+        stopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((StatusActivity) getActivity()).quit();
             }
         });
         mHueStatus = (StatusView) view.findViewById(R.id.fragment_status_hue_status);
@@ -78,7 +91,9 @@ public class StatusFragment extends Fragment {
 
     public void onEventMainThread(PoseEvent poseEvent){
         Log.d(TAG, "PoseEvent: " + poseEvent.getPose());
-        Toast.makeText(getActivity(), poseEvent.getPose().toString(), Toast.LENGTH_SHORT).show();
+        if(poseEvent.getPose().getType() != Pose.Type.NONE) {
+            mLastCommandView.setText(poseEvent.getPose().toString());
+        }
     }
 
     public void onEventMainThread(MyoEvent myoEvent) {

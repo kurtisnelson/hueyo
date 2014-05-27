@@ -18,6 +18,7 @@ import com.thalmic.myo.DeviceListener;
 import com.thalmic.myo.Hub;
 import com.thalmic.myo.Myo;
 import com.thalmic.myo.Pose;
+import com.thalmic.myo.Vector3;
 import com.thalmic.myo.scanner.ScanActivity;
 import com.thalmic.myo.trainer.TrainActivity;
 
@@ -43,11 +44,10 @@ public class HueyoService extends Service {
     public void onCreate() {
         super.onCreate();
         mPrefUtils = PreferenceUtil.newInstance(getApplicationContext());
-        //EventBusUtils.register(this);
+        EventBusUtils.register(this);
 
         createMyo();
         createHue();
-        mPoseConsumer = new PoseConsumer(mHue);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class HueyoService extends Service {
 
     @Override
     public void onDestroy() {
-        //EventBusUtils.unregister(this);
+        EventBusUtils.unregister(this);
 
         destroyMyo();
         destroyHue();
@@ -78,8 +78,7 @@ public class HueyoService extends Service {
     }
 
     public void pair() {
-        if(!isMyoConnected())
-            mHub.pairWithAdjacentMyo();
+       mHub.pairWithAnyMyos(2);
     }
 
     public void pairActivity(Context context) {
@@ -104,6 +103,12 @@ public class HueyoService extends Service {
             return !mHub.getConnectedDevices().isEmpty();
         }
         return false;
+    }
+
+    public void onEvent(Myo.VibrationType event) {
+        for(Myo device : mHub.getConnectedDevices()){
+            device.vibrate(event);
+        }
     }
 
     private void createHue() {
@@ -166,7 +171,14 @@ public class HueyoService extends Service {
         @Override
         public void onPose(Myo myo, long timestamp, Pose pose) {
             EventBusUtils.post(new PoseEvent(myo, pose));
-            mPoseConsumer.eat(mSelectedLight, pose);
+            if(mPoseConsumer != null)
+                mPoseConsumer.eat(pose);
+        }
+
+        @Override
+        public void onGyroscopeData(Myo myo, long timestamp, Vector3 gyro) {
+            if(mPoseConsumer != null)
+                mPoseConsumer.eat(gyro);
         }
     };
 
@@ -186,6 +198,7 @@ public class HueyoService extends Service {
             Log.i(TAG, "Hue bridge connected");
             EventBusUtils.postSticky(new HueEvent(b, true));
             loadSelectedLight(b);
+            mPoseConsumer = new PoseConsumer(mHue, mSelectedLight);
         }
 
         @Override

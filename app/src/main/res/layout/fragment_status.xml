@@ -45,6 +45,24 @@
             android:layout_height="wrap_content"
             android:text="@string/no_paired_hue" />
     </LinearLayout>
+    <TextView
+        android:id="@+id/fragment_status_last_command"
+        android:text="@string/none"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/instructions"
+        android:id="@+id/fragment_status_instructions"
+        android:layout_gravity="center_horizontal" />
+    <Button
+        android:id="@+id/fragment_status_stop"
+        android:text="@string/stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 
 </LinearLayout>

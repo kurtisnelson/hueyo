@@ -16,6 +16,7 @@ public class StatusActivity extends SingleFragmentActivity {
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             mBoundService = ((HueyoService.LocalBinder)service).getService();
+            mBoundService.pair();
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -49,5 +50,14 @@ public class StatusActivity extends SingleFragmentActivity {
             unbindService(mConnection);
             mIsBound = false;
         }
+    }
+
+    public void quit() {
+        if(mIsBound) {
+            unbindService(mConnection);
+            mIsBound = false;
+        }
+        stopService(new Intent(this, HueyoService.class));
+        finish();
     }
 }
