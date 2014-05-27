@@ -1,18 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView
-        android:id="@+id/fragment_status_mac"
-        android:text="@string/no_paired_myo"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <Button
-        android:id="@+id/fragment_status_train"
-        android:enabled="false"
-        android:text="@string/myosdk__begin_training"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <com.thisisnotajoke.hueyo.StatusView
+            android:id="@+id/fragment_status_myo_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/fragment_status_myo_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_paired_myo" />
+
+        <Button
+            android:id="@+id/fragment_status_train"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="@string/myosdk__title_activity_train" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <com.thisisnotajoke.hueyo.StatusView
+            android:id="@+id/fragment_status_hue_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/fragment_status_hue_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_paired_hue" />
+    </LinearLayout>
+
 
 </LinearLayout>

@@ -13,7 +13,7 @@ public class EventBusUtils {
             EventBus.getDefault().unregister(object);
     }
 
-    public static void post(MyoEvent myoEvent) {
-        EventBus.getDefault().post(myoEvent);
+    public static void post(Object event) {
+        EventBus.getDefault().post(event);
     }
 }

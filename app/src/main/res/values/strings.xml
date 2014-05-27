@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Hueyo</string>
     <string name="no_paired_myo">No Myo found</string>
+    <string name="hue_push_link">Please press the Hue button in the next 30 seconds</string>
+    <string name="no_paired_hue">No Hue found</string>
 </resources>
