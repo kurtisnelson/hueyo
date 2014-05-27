@@ -10,8 +10,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import de.greenrobot.event.EventBus;
-
 public class StatusFragment extends Fragment {
 
     private static final String TAG = "StatusFragment";

@@ -28,6 +28,8 @@ public class HueyoService extends Service {
     private final IBinder mBinder = new LocalBinder();
     private Hub mHub;
     private PHHueSDK mHue;
+    private PoseConsumer mPoseConsumer;
+    private int mSelectedLight;
 
     private PreferenceUtil mPrefUtils;
 
@@ -45,6 +47,7 @@ public class HueyoService extends Service {
 
         createMyo();
         createHue();
+        mPoseConsumer = new PoseConsumer(mHue);
     }
 
     @Override
@@ -58,6 +61,7 @@ public class HueyoService extends Service {
 
         destroyMyo();
         destroyHue();
+        mPoseConsumer = null;
         super.onDestroy();
     }
 
@@ -162,6 +166,7 @@ public class HueyoService extends Service {
         @Override
         public void onPose(Myo myo, long timestamp, Pose pose) {
             EventBusUtils.post(new PoseEvent(myo, pose));
+            mPoseConsumer.eat(mSelectedLight, pose);
         }
     };
 
@@ -180,6 +185,7 @@ public class HueyoService extends Service {
             mPrefUtils.setHueUsername(b.getResourceCache().getBridgeConfiguration().getUsername());
             Log.i(TAG, "Hue bridge connected");
             EventBusUtils.postSticky(new HueEvent(b, true));
+            loadSelectedLight(b);
         }
 
         @Override
@@ -222,6 +228,7 @@ public class HueyoService extends Service {
         @Override
         public void onConnectionResumed(PHBridge bridge) {
             EventBusUtils.postSticky(new HueEvent(bridge, true));
+            loadSelectedLight(bridge);
         }
 
         @Override
@@ -230,4 +237,12 @@ public class HueyoService extends Service {
         }
 
     };
+
+    private void loadSelectedLight(PHBridge bridge) {
+        mSelectedLight = mPrefUtils.getSelectedLight();
+        if(mSelectedLight >= bridge.getResourceCache().getAllLights().size()){
+            mSelectedLight = 0;
+            mPrefUtils.setSelectedLight(0);
+        }
+    }
 }

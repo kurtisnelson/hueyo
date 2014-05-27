@@ -9,6 +9,7 @@ public class PreferenceUtil {
     private static final String PREFS_NAME = "Hueyo.PreferenceUtil";
     private static final String BRIDGE_ADDRESS = "HueBridgeAddress";
     private static final String HUE_USERNAME = "HueUsername";
+    private static final String SELECTED_LIGHT = "HueSelectedLight";
     private final SharedPreferences mPreferences;
 
     public PreferenceUtil(Context applicationContext) {
@@ -17,6 +18,10 @@ public class PreferenceUtil {
 
     public static PreferenceUtil newInstance(Context applicationContext) {
         return new PreferenceUtil(applicationContext);
+    }
+
+    public int getSelectedLight() {
+        return mPreferences.getInt(SELECTED_LIGHT, 0);
     }
 
     public String getLastConnectedBridgeAddress() {
@@ -33,5 +38,9 @@ public class PreferenceUtil {
 
     public void setHueUsername(String name){
         mPreferences.edit().putString(HUE_USERNAME, name).commit();
+    }
+
+    public void setSelectedLight(int selectedLight) {
+        mPreferences.edit().putInt(SELECTED_LIGHT, selectedLight).commit();
     }
 }
