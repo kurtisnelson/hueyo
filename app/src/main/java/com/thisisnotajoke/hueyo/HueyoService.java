@@ -18,6 +18,7 @@ import com.thalmic.myo.DeviceListener;
 import com.thalmic.myo.Hub;
 import com.thalmic.myo.Myo;
 import com.thalmic.myo.Pose;
+import com.thalmic.myo.Quaternion;
 import com.thalmic.myo.Vector3;
 import com.thalmic.myo.scanner.ScanActivity;
 import com.thalmic.myo.trainer.TrainActivity;
@@ -158,6 +159,8 @@ public class HueyoService extends Service {
 
 
     private DeviceListener mMyoListener = new AbstractDeviceListener() {
+        public long mLastOrientationTimestamp;
+
         @Override
         public void onConnect(Myo myo, long timestamp) {
             EventBusUtils.postSticky(new MyoEvent(myo));
@@ -176,9 +179,12 @@ public class HueyoService extends Service {
         }
 
         @Override
-        public void onGyroscopeData(Myo myo, long timestamp, Vector3 gyro) {
-            if(mPoseConsumer != null)
-                mPoseConsumer.eat(gyro);
+        public void onOrientationData(Myo myo, long timestamp, Quaternion rotation) {
+            if(timestamp > mLastOrientationTimestamp + 500) {
+                mLastOrientationTimestamp = timestamp;
+                if (mPoseConsumer != null)
+                    mPoseConsumer.eat(rotation);
+            }
         }
     };
 

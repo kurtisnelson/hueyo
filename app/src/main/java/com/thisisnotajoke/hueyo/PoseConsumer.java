@@ -3,58 +3,48 @@ package com.thisisnotajoke.hueyo;
 import android.util.Log;
 
 import com.philips.lighting.hue.sdk.PHHueSDK;
-import com.philips.lighting.model.PHBridge;
 import com.philips.lighting.model.PHLight;
 import com.philips.lighting.model.PHLightState;
 import com.thalmic.myo.Myo;
 import com.thalmic.myo.Pose;
-import com.thalmic.myo.Vector3;
+import com.thalmic.myo.Quaternion;
 
 public class PoseConsumer {
     private final PHHueSDK mHue;
-    private final PHBridge mBridge;
     private final int mSelectedLight;
     private boolean mEnabled = false;
-    private long mLastChange = 0;
+    private boolean mPower = true;
+    private boolean mEffects = false;
 
     public PoseConsumer(PHHueSDK hue, int selectedLight) {
         mHue = hue;
-        mBridge = mHue.getSelectedBridge();
         mSelectedLight = selectedLight;
     }
 
     public void eat(Pose pose) {
-        PHLight light = mBridge.getResourceCache().getAllLights().get(mSelectedLight);
-        PHLightState lightState = light.getLastKnownLightState();
-        lightState.setAlertMode(PHLight.PHLightAlertMode.ALERT_NONE);
+        PHLightState state = new PHLightState();
         switch (pose.getType()) {
             case WAVE_IN:
                 if(mEnabled) {
-                    lightState.setOn(!lightState.isOn());
+                    state.setOn(mPower);
+                    mPower = !mPower;
                     EventBusUtils.post(Myo.VibrationType.SHORT);
                 }
                 break;
             case FINGERS_SPREAD:
                 if(mEnabled) {
-                    switch (lightState.getEffectMode()) {
-                        case EFFECT_COLORLOOP:
-                            lightState.setEffectMode(PHLight.PHLightEffectMode.EFFECT_NONE);
-                            break;
-                        case EFFECT_NONE:
-                        case EFFECT_UNKNOWN:
-                            lightState.setEffectMode(PHLight.PHLightEffectMode.EFFECT_COLORLOOP);
-                            break;
-                    }
+                    state.setEffectMode(mEffects ? PHLight.PHLightEffectMode.EFFECT_COLORLOOP : PHLight.PHLightEffectMode.EFFECT_NONE);
+                    mEffects = !mEffects;
                     EventBusUtils.post(Myo.VibrationType.SHORT);
                 }
                 break;
             case FIST:
                 if(!mEnabled) {
-                    lightState.setAlertMode(PHLight.PHLightAlertMode.ALERT_SELECT);
+                    state.setAlertMode(PHLight.PHLightAlertMode.ALERT_SELECT);
                     EventBusUtils.post(Myo.VibrationType.LONG);
                     mEnabled = true;
                 }else{
-                    lightState.setAlertMode(PHLight.PHLightAlertMode.ALERT_NONE);
+                    state.setAlertMode(PHLight.PHLightAlertMode.ALERT_NONE);
                     EventBusUtils.post(Myo.VibrationType.MEDIUM);
                     mEnabled = false;
                 }
@@ -64,51 +54,30 @@ public class PoseConsumer {
             case NONE:
                 return;
         }
-        mBridge.setLightStateForDefaultGroup(lightState);
+        mHue.getSelectedBridge().setLightStateForDefaultGroup(state);
     }
 
-    public void eat(Vector3 vector) {
+    public void eat(Quaternion quat) {
         if (mEnabled) {
-            if(mLastChange > System.currentTimeMillis() - 500)
-                return;
-            boolean changed = false;
-            PHLight light = mBridge.getResourceCache().getAllLights().get(mSelectedLight);
-            PHLightState lightState = light.getLastKnownLightState();
-            //X -> twist Y -> up, down Z -> left, right
-            if(Math.abs(vector.y()) > 10){
-                Log.d("Myo", "up/down: " + vector.y());
-                changed = true;
-                if(vector.y() < 0) {
-                    lightState.setBrightness(lightState.getBrightness() + 40);
-                }else{
-                    lightState.setBrightness(lightState.getBrightness() - 40);
-                }
+            PHLightState state = new PHLightState();
+
+            double pitch = (Quaternion.pitch(quat) + 1.5) / 3.0;
+            state.setBrightness((int)(pitch * 255.0));
+
+            double yaw = Quaternion.yaw(quat);
+            if(yaw <= -1.5){// -3.0...-1.5
+                yaw = 0.5 + (yaw / 3.0)*0.5;
+            }else if(yaw >= 1.5){// 1.5...3.0
+                yaw = 0.5 - (yaw / -3.0)*0.5;
             }
-            if(Math.abs(vector.z()) > 10){
-                Log.d("Myo", "left/right: " + vector.z());
-                changed = true;
-                lightState.setColorMode(PHLight.PHLightColorMode.COLORMODE_HUE_SATURATION);
-                if(vector.z() < 0) {
-                    lightState.setHue(lightState.getHue() + 1000);
-                }else{
-                    lightState.setHue(lightState.getHue() - 1000);
-                }
-            }
-            if(Math.abs(vector.x()) > 10){
-                Log.d("Myo", "twist: " + vector.x());
-                changed = true;
-                lightState.setColorMode(PHLight.PHLightColorMode.COLORMODE_HUE_SATURATION);
-                if(vector.z() < 0) {
-                    lightState.setSaturation(lightState.getSaturation() + 30);
-                }else{
-                    lightState.setSaturation(lightState.getSaturation() - 30);
-                }
-            }
-            if(changed){
-                Log.d("Myo", "changing light state");
-                mLastChange = System.currentTimeMillis();
-                mBridge.setLightStateForDefaultGroup(lightState);
-            }
+            state.setHue((int) (yaw * 65535));
+
+            double saturation = (Quaternion.roll(quat) + 1.5) / 4.0;
+            state.setSaturation((int) (saturation * 255.0));
+
+            state.setColorMode(PHLight.PHLightColorMode.COLORMODE_HUE_SATURATION);
+
+            mHue.getSelectedBridge().setLightStateForDefaultGroup(state);
         }
     }
 }
