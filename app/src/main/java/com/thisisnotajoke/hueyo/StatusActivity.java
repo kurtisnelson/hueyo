@@ -6,10 +6,15 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.Fragment;
 
-public class StatusActivity extends SingleFragmentActivity {
-    private static final String TAG = "SplashActivity";
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
+
+public class StatusActivity extends FragmentActivity {
+    private static final String STATE_LIGHTS = "LightsEnabled";
     private boolean mIsBound;
     private HueyoService mBoundService;
 
@@ -23,15 +28,24 @@ public class StatusActivity extends SingleFragmentActivity {
             mBoundService = null;
         }
     };
-
-    @Override
-    protected Fragment getFragment() {
-        return StatusFragment.newInstance();
-    }
+    private FragmentPageAdapter mAdapter;
+    private ViewPager mPager;
+    private boolean mLightsEnabled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_status);
+        EventBusUtils.register(this);
+
+        if(savedInstanceState != null){
+            mLightsEnabled = savedInstanceState.getBoolean(STATE_LIGHTS);
+        }
+        mAdapter = new FragmentPageAdapter(getSupportFragmentManager());
+
+        mPager = (ViewPager) findViewById(R.id.activity_status_pager);
+        mPager.setAdapter(mAdapter);
+
         startService(new Intent(this, HueyoService.class));
     }
 
@@ -45,11 +59,27 @@ public class StatusActivity extends SingleFragmentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBusUtils.unregister(this);
         if (mIsBound) {
             // Detach our existing connection.
             unbindService(mConnection);
             mIsBound = false;
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(STATE_LIGHTS, mLightsEnabled);
+    }
+
+    public void onEventMainThread(HueEvent e){
+        if(e.isConnected()) {
+            mLightsEnabled = true;
+        } else {
+            mLightsEnabled = false;
+        }
+        mAdapter.notifyDataSetChanged();
     }
 
     public void quit() {
@@ -59,5 +89,31 @@ public class StatusActivity extends SingleFragmentActivity {
         }
         stopService(new Intent(this, HueyoService.class));
         finish();
+    }
+
+    private class FragmentPageAdapter extends FragmentStatePagerAdapter {
+        public FragmentPageAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public int getCount() {
+            if(mLightsEnabled){
+                return 2;
+            }else{
+                return 1;
+            }
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position){
+                case 0:
+                    return StatusFragment.newInstance();
+                case 1:
+                    return LightsFragment.newInstance();
+            }
+            return null;
+        }
     }
 }

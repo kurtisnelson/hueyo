@@ -8,4 +8,5 @@
     <string name="instructions">The fist gesture turns on and off the controls.</string>
     <string name="stop">Stop Controller</string>
     <string name="ok">OK</string>
+    <string name="lights">Lights</string>
 </resources>
