@@ -31,21 +31,13 @@ public class PoseConsumer {
                     EventBusUtils.post(Myo.VibrationType.SHORT);
                 }
                 break;
-            case FINGERS_SPREAD:
-                if(mEnabled) {
-                    state.setEffectMode(mEffects ? PHLight.PHLightEffectMode.EFFECT_COLORLOOP : PHLight.PHLightEffectMode.EFFECT_NONE);
-                    mEffects = !mEffects;
-                    EventBusUtils.post(Myo.VibrationType.SHORT);
-                }
-                break;
             case FIST:
                 if(!mEnabled) {
                     state.setAlertMode(PHLight.PHLightAlertMode.ALERT_SELECT);
                     EventBusUtils.post(Myo.VibrationType.LONG);
                     mEnabled = true;
                 }else{
-                    state.setAlertMode(PHLight.PHLightAlertMode.ALERT_NONE);
-                    EventBusUtils.post(Myo.VibrationType.MEDIUM);
+                    EventBusUtils.post(Myo.VibrationType.LONG);
                     mEnabled = false;
                 }
                 break;

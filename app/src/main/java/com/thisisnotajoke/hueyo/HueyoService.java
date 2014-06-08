@@ -180,7 +180,7 @@ public class HueyoService extends Service {
 
         @Override
         public void onOrientationData(Myo myo, long timestamp, Quaternion rotation) {
-            if(timestamp > mLastOrientationTimestamp + 500) {
+            if(timestamp > mLastOrientationTimestamp + 750) {
                 mLastOrientationTimestamp = timestamp;
                 if (mPoseConsumer != null)
                     mPoseConsumer.eat(rotation);
