@@ -1,9 +1,11 @@
 <resources>
     <string name="app_name">Hueyo</string>
     <string name="no_paired_myo">No Myo found</string>
+    <string name="hue_auth_required">Hue Authorization Required</string>
     <string name="hue_push_link">Please press the Hue button in the next 30 seconds</string>
     <string name="no_paired_hue">No Hue found</string>
     <string name="none">None</string>
     <string name="instructions">The fist gesture turns on and off the controls.</string>
     <string name="stop">Stop Controller</string>
+    <string name="ok">OK</string>
 </resources>

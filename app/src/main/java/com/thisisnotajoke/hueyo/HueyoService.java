@@ -113,7 +113,7 @@ public class HueyoService extends Service {
     }
 
     private void createHue() {
-        mHue = PHHueSDK.create();
+        mHue = PHHueSDK.getInstance();
         mHue.setDeviceName(getString(R.string.app_name));
         mHue.getNotificationManager().registerSDKListener(mHueListener);
 

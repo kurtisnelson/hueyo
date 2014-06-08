@@ -115,7 +115,7 @@ public class StatusFragment extends Fragment {
     }
 
     public void onEventMainThread(HueAuthEvent event) {
-        Toast.makeText(getActivity(), R.string.hue_push_link, Toast.LENGTH_LONG).show();
+        startActivity(new Intent(getActivity(), PHPushlinkActivity.class));
     }
 
     public void onEventMainThread(HueEvent event) {
