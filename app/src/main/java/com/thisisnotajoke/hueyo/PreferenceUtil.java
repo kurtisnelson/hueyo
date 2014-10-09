@@ -16,10 +16,6 @@ public class PreferenceUtil {
         mPreferences = applicationContext.getSharedPreferences(PREFS_NAME, 0);
     }
 
-    public static PreferenceUtil newInstance(Context applicationContext) {
-        return new PreferenceUtil(applicationContext);
-    }
-
     public int getSelectedLight() {
         return mPreferences.getInt(SELECTED_LIGHT, 0);
     }
@@ -29,7 +25,7 @@ public class PreferenceUtil {
     }
 
     public void setLastConnectedBridgeAddress(String address){
-        mPreferences.edit().putString(BRIDGE_ADDRESS, address).commit();
+        mPreferences.edit().putString(BRIDGE_ADDRESS, address).apply();
     }
 
     public String getHueUsername() {
@@ -37,10 +33,10 @@ public class PreferenceUtil {
     }
 
     public void setHueUsername(String name){
-        mPreferences.edit().putString(HUE_USERNAME, name).commit();
+        mPreferences.edit().putString(HUE_USERNAME, name).apply();
     }
 
     public void setSelectedLight(int selectedLight) {
-        mPreferences.edit().putInt(SELECTED_LIGHT, selectedLight).commit();
+        mPreferences.edit().putInt(SELECTED_LIGHT, selectedLight).apply();
     }
 }

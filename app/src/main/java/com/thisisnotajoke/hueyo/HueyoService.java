@@ -23,15 +23,23 @@ import com.thalmic.myo.scanner.ScanActivity;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class HueyoService extends Service {
     private static final String TAG = "HueyoService";
     private final IBinder mBinder = new LocalBinder();
-    private Hub mHub;
-    private PHHueSDK mHue;
+
     private PoseConsumer mPoseConsumer;
     private int mSelectedLight;
 
-    private PreferenceUtil mPrefUtils;
+    @Inject
+    protected PreferenceUtil mPrefUtils;
+
+    @Inject
+    protected PHHueSDK mHue;
+
+    @Inject
+    protected Hub mHub;
 
     public class LocalBinder extends Binder {
         HueyoService getService() {
@@ -42,7 +50,7 @@ public class HueyoService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mPrefUtils = PreferenceUtil.newInstance(getApplicationContext());
+        HueyoApplication.get(this).inject(this);
         EventBusUtils.register(this);
 
         createMyo();
@@ -98,7 +106,6 @@ public class HueyoService extends Service {
     }
 
     private void createHue() {
-        mHue = PHHueSDK.getInstance();
         mHue.setDeviceName(getString(R.string.app_name));
         mHue.getNotificationManager().registerSDKListener(mHueListener);
 
@@ -127,7 +134,6 @@ public class HueyoService extends Service {
     }
 
     private void createMyo() {
-        mHub = Hub.getInstance();
         if (!mHub.init(this)) {
             Log.e(TAG, "Could not initialize the Hub.");
             stopSelf();
