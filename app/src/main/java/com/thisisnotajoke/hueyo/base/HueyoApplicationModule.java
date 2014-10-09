@@ -4,7 +4,10 @@ import android.content.Context;
 
 import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.thalmic.myo.Hub;
+import com.thalmic.myo.Pose;
+import com.thalmic.myo.Quaternion;
 import com.thisisnotajoke.hueyo.HueyoService;
+import com.thisisnotajoke.hueyo.ObservableFactory;
 import com.thisisnotajoke.hueyo.PreferenceUtil;
 import com.thisisnotajoke.hueyo.StatusActivity;
 import com.thisisnotajoke.hueyo.myo.PoseConsumer;
@@ -13,6 +16,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import rx.Observable;
 
 @Module(
         injects = {
@@ -54,7 +58,17 @@ public class HueyoApplicationModule {
     }
 
     @Provides
-    public PoseConsumer providesPoseConsumer(PHHueSDK hueSDK) {
-        return new PoseConsumer(hueSDK);
+    public Observable<Pose> providesPoseObservable(Hub hub) {
+        return ObservableFactory.fromPosesOf(hub);
+    }
+
+    @Provides
+    public Observable<Quaternion> providesOrientationObservable(Hub hub) {
+        return ObservableFactory.fromOrientationOf(hub);
+    }
+
+    @Provides
+    public PoseConsumer providesPoseConsumer(PHHueSDK hueSDK, Observable<Pose> poseObservable, Observable<Quaternion> orientationObservable) {
+        return new PoseConsumer(hueSDK, poseObservable, orientationObservable);
     }
 }

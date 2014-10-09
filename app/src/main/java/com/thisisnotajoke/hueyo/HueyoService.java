@@ -32,11 +32,15 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.functions.Action0;
+import rx.subscriptions.Subscriptions;
+
 public class HueyoService extends Service {
     private static final String TAG = "HueyoService";
     private final IBinder mBinder = new LocalBinder();
-
-    private int mSelectedLight;
 
     @Inject
     protected PreferenceUtil mPrefUtils;
@@ -152,39 +156,33 @@ public class HueyoService extends Service {
         pair();
     }
 
+
+
     private void destroyMyo() {
+        mPoseConsumer.disconnect();
         mHub.removeListener(mMyoListener);
+        mHub.shutdown();
         mHub = null;
     }
 
-
     private DeviceListener mMyoListener = new AbstractDeviceListener() {
-        public long mLastOrientationTimestamp;
-
         @Override
         public void onConnect(Myo myo, long timestamp) {
             EventBusUtils.postSticky(new MyoEvent(myo));
+            mPoseConsumer.disconnect();
+            mPoseConsumer.consumePoses();
+            mPoseConsumer.consumeOrientation();
         }
 
         @Override
         public void onDisconnect(Myo myo, long timestamp) {
             EventBusUtils.postSticky(new MyoEvent(myo));
+            mPoseConsumer.disconnect();
         }
 
         @Override
         public void onPose(Myo myo, long timestamp, Pose pose) {
             EventBusUtils.post(new PoseEvent(myo, pose));
-            if(mPoseConsumer != null)
-                mPoseConsumer.eat(pose);
-        }
-
-        @Override
-        public void onOrientationData(Myo myo, long timestamp, Quaternion rotation) {
-            if(timestamp > mLastOrientationTimestamp + 750) {
-                mLastOrientationTimestamp = timestamp;
-                if (mPoseConsumer != null)
-                    mPoseConsumer.eat(rotation);
-            }
         }
     };
 
@@ -256,11 +254,12 @@ public class HueyoService extends Service {
 
     };
 
-    private void loadSelectedLight(PHBridge bridge) {
-        mSelectedLight = mPrefUtils.getSelectedLight();
-        if(mSelectedLight >= bridge.getResourceCache().getAllLights().size()){
-            mSelectedLight = 0;
+    private int loadSelectedLight(PHBridge bridge) {
+        int selectedLight = mPrefUtils.getSelectedLight();
+        if(selectedLight >= bridge.getResourceCache().getAllLights().size()){
+            selectedLight = 0;
             mPrefUtils.setSelectedLight(0);
         }
+        return selectedLight;
     }
 }
