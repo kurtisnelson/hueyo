@@ -1,4 +1,4 @@
-package com.thisisnotajoke.hueyo;
+package com.thisisnotajoke.hueyo.controller;
 
 import android.app.Service;
 import android.content.Context;
@@ -18,25 +18,20 @@ import com.thalmic.myo.DeviceListener;
 import com.thalmic.myo.Hub;
 import com.thalmic.myo.Myo;
 import com.thalmic.myo.Pose;
-import com.thalmic.myo.Quaternion;
 import com.thalmic.myo.scanner.ScanActivity;
+import com.thisisnotajoke.hueyo.model.PreferenceUtil;
+import com.thisisnotajoke.hueyo.R;
 import com.thisisnotajoke.hueyo.base.EventBusUtils;
 import com.thisisnotajoke.hueyo.base.HueyoApplication;
-import com.thisisnotajoke.hueyo.hue.HueAuthEvent;
-import com.thisisnotajoke.hueyo.hue.HueEvent;
-import com.thisisnotajoke.hueyo.myo.MyoEvent;
-import com.thisisnotajoke.hueyo.myo.PoseConsumer;
-import com.thisisnotajoke.hueyo.myo.PoseEvent;
+import com.thisisnotajoke.hueyo.model.hue.HueAuthEvent;
+import com.thisisnotajoke.hueyo.model.hue.HueEvent;
+import com.thisisnotajoke.hueyo.model.myo.MyoEvent;
+import com.thisisnotajoke.hueyo.model.myo.PoseConsumer;
+import com.thisisnotajoke.hueyo.model.myo.PoseEvent;
 
 import java.util.List;
 
 import javax.inject.Inject;
-
-import rx.Observable;
-import rx.Observer;
-import rx.Subscription;
-import rx.functions.Action0;
-import rx.subscriptions.Subscriptions;
 
 public class HueyoService extends Service {
     private static final String TAG = "HueyoService";

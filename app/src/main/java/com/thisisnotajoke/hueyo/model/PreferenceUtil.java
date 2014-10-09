@@ -1,4 +1,4 @@
-package com.thisisnotajoke.hueyo;
+package com.thisisnotajoke.hueyo.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;

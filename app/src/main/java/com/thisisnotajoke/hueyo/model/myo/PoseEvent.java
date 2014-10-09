@@ -1,8 +1,7 @@
-package com.thisisnotajoke.hueyo.myo;
+package com.thisisnotajoke.hueyo.model.myo;
 
 import com.thalmic.myo.Myo;
 import com.thalmic.myo.Pose;
-import com.thisisnotajoke.hueyo.myo.MyoEvent;
 
 public class PoseEvent extends MyoEvent {
     private final Pose mPose;

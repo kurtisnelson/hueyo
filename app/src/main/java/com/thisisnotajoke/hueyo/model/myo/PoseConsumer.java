@@ -1,4 +1,4 @@
-package com.thisisnotajoke.hueyo.myo;
+package com.thisisnotajoke.hueyo.model.myo;
 
 import android.os.Handler;
 
@@ -13,11 +13,8 @@ import com.thisisnotajoke.hueyo.base.EventBusUtils;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
-import rx.Scheduler;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 public class PoseConsumer {
     private boolean mEnabled = false;

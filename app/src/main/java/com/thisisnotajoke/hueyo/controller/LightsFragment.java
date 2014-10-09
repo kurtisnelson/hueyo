@@ -1,4 +1,4 @@
-package com.thisisnotajoke.hueyo.hue;
+package com.thisisnotajoke.hueyo.controller;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.thisisnotajoke.hueyo.StatusView
+        <com.thisisnotajoke.hueyo.view.StatusView
             android:id="@+id/fragment_status_myo_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.thisisnotajoke.hueyo.StatusView
+        <com.thisisnotajoke.hueyo.view.StatusView
             android:id="@+id/fragment_status_hue_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

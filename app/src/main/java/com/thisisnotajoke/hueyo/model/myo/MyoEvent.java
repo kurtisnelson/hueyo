@@ -1,4 +1,4 @@
-package com.thisisnotajoke.hueyo.myo;
+package com.thisisnotajoke.hueyo.model.myo;
 
 import com.thalmic.myo.Myo;
 

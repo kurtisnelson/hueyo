@@ -1,8 +1,10 @@
-package com.thisisnotajoke.hueyo;
+package com.thisisnotajoke.hueyo.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
+
+import com.thisisnotajoke.hueyo.R;
 
 public class StatusView extends ImageView{
     private boolean mActive;

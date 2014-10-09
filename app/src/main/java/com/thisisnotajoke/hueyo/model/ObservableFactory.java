@@ -1,4 +1,4 @@
-package com.thisisnotajoke.hueyo;
+package com.thisisnotajoke.hueyo.model;
 
 import com.thalmic.myo.AbstractDeviceListener;
 import com.thalmic.myo.DeviceListener;

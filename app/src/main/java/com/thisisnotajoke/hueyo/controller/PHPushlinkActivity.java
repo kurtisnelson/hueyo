@@ -1,4 +1,4 @@
-package com.thisisnotajoke.hueyo.hue;
+package com.thisisnotajoke.hueyo.controller;
 
 
 import java.util.List;
@@ -16,6 +16,7 @@ import com.philips.lighting.model.PHBridge;
 import com.thisisnotajoke.hueyo.base.BaseActivity;
 import com.thisisnotajoke.hueyo.base.EventBusUtils;
 import com.thisisnotajoke.hueyo.R;
+import com.thisisnotajoke.hueyo.model.hue.HueEvent;
 
 import javax.inject.Inject;
 

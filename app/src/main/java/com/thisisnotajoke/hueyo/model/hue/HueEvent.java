@@ -1,4 +1,4 @@
-package com.thisisnotajoke.hueyo.hue;
+package com.thisisnotajoke.hueyo.model.hue;
 
 import com.philips.lighting.model.PHBridge;
 

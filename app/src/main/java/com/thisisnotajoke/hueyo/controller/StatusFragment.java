@@ -1,4 +1,4 @@
-package com.thisisnotajoke.hueyo;
+package com.thisisnotajoke.hueyo.controller;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,16 +7,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.thalmic.myo.Pose;
+import com.thisisnotajoke.hueyo.R;
+import com.thisisnotajoke.hueyo.view.StatusView;
 import com.thisisnotajoke.hueyo.base.EventBusUtils;
-import com.thisisnotajoke.hueyo.hue.HueAuthEvent;
-import com.thisisnotajoke.hueyo.hue.HueEvent;
-import com.thisisnotajoke.hueyo.hue.PHPushlinkActivity;
-import com.thisisnotajoke.hueyo.myo.MyoEvent;
-import com.thisisnotajoke.hueyo.myo.PoseEvent;
+import com.thisisnotajoke.hueyo.model.hue.HueAuthEvent;
+import com.thisisnotajoke.hueyo.model.hue.HueEvent;
+import com.thisisnotajoke.hueyo.model.myo.MyoEvent;
+import com.thisisnotajoke.hueyo.model.myo.PoseEvent;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 
 public class StatusFragment extends Fragment {
 
@@ -26,11 +29,17 @@ public class StatusFragment extends Fragment {
     private static final String STATE_HUE_ACTIVE = "HueActive";
     private static final String STATE_HUE_NAME = "HueName";
     private String mMyoMac;
-    private TextView mMyoAddressView;
-    private StatusView mMyoStatus;
-    private StatusView mHueStatus;
-    private TextView mHueName;
-    private TextView mLastCommandView;
+
+    @InjectView(R.id.fragment_status_myo_address)
+    protected TextView mMyoAddressView;
+    @InjectView(R.id.fragment_status_myo_status)
+    protected StatusView mMyoStatus;
+    @InjectView(R.id.fragment_status_hue_status)
+    protected StatusView mHueStatus;
+    @InjectView(R.id.fragment_status_hue_name)
+    protected TextView mHueName;
+    @InjectView(R.id.fragment_status_last_command)
+    protected TextView mLastCommandView;
 
     @Override
     public void onStart() {
@@ -41,29 +50,16 @@ public class StatusFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_status, container, false);
-        mMyoStatus = (StatusView) view.findViewById(R.id.fragment_status_myo_status);
-        mMyoAddressView = (TextView) view.findViewById(R.id.fragment_status_myo_address);
-        mLastCommandView = (TextView) view.findViewById(R.id.fragment_status_last_command);
-
-        Button stopButton = (Button) view.findViewById(R.id.fragment_status_stop);
-        stopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((StatusActivity) getActivity()).quit();
-            }
-        });
-        mHueStatus = (StatusView) view.findViewById(R.id.fragment_status_hue_status);
-        mHueName = (TextView) view.findViewById(R.id.fragment_status_hue_name);
+        ButterKnife.inject(this, view);
 
         if(savedInstanceState != null) {
             setMyoMac(savedInstanceState.getString(STATE_MYO_MAC, null));
             setHueName(savedInstanceState.getString(STATE_HUE_NAME, null));
             mMyoStatus.setActive(savedInstanceState.getBoolean(STATE_MYO_ACTIVE, false));
             mHueStatus.setActive(savedInstanceState.getBoolean(STATE_HUE_ACTIVE, false));
-        }else {
-            onEventMainThread((MyoEvent) EventBusUtils.getSticky(MyoEvent.class));
-            onEventMainThread((HueEvent) EventBusUtils.getSticky(HueEvent.class));
         }
+        onEventMainThread((MyoEvent) EventBusUtils.getSticky(MyoEvent.class));
+        onEventMainThread((HueEvent) EventBusUtils.getSticky(HueEvent.class));
         return view;
     }
 
@@ -74,6 +70,11 @@ public class StatusFragment extends Fragment {
         outState.putString(STATE_HUE_NAME, mHueName.getText().toString());
         outState.putBoolean(STATE_MYO_ACTIVE, mMyoStatus.isActive());
         outState.putBoolean(STATE_HUE_ACTIVE, mHueStatus.isActive());
+    }
+
+    @OnClick(R.id.fragment_status_stop)
+    public void quit() {
+        ((StatusActivity) getActivity()).quit();
     }
 
     @Override
@@ -87,10 +88,7 @@ public class StatusFragment extends Fragment {
     }
 
     public void onEventMainThread(PoseEvent poseEvent){
-        Log.d(TAG, "PoseEvent: " + poseEvent.getPose());
-        if(poseEvent.getPose() != Pose.REST) {
-            mLastCommandView.setText(poseEvent.getPose().toString());
-        }
+        mLastCommandView.setText(poseEvent.getPose().toString());
     }
 
     public void onEventMainThread(MyoEvent myoEvent) {

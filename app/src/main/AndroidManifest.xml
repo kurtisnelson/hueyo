@@ -8,17 +8,17 @@
         android:icon="@drawable/ic_launcher"
         android:theme="@android:style/Theme.Holo.Light"
         >
-        <service android:name=".HueyoService">
+        <service android:name=".controller.HueyoService">
 
         </service>
-        <activity android:name=".StatusActivity">
+        <activity android:name=".controller.StatusActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".hue.PHPushlinkActivity"
+        <activity android:name=".controller.PHPushlinkActivity"
             android:theme="@android:style/Theme.Holo.Dialog">
         </activity>
 
