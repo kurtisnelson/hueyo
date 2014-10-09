@@ -9,9 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.thalmic.myo.Pose;
+import com.thisisnotajoke.hueyo.base.EventBusUtils;
+import com.thisisnotajoke.hueyo.hue.HueAuthEvent;
+import com.thisisnotajoke.hueyo.hue.HueEvent;
+import com.thisisnotajoke.hueyo.hue.PHPushlinkActivity;
+import com.thisisnotajoke.hueyo.myo.MyoEvent;
+import com.thisisnotajoke.hueyo.myo.PoseEvent;
 
 public class StatusFragment extends Fragment {
 

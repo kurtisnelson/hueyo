@@ -20,6 +20,13 @@ import com.thalmic.myo.Myo;
 import com.thalmic.myo.Pose;
 import com.thalmic.myo.Quaternion;
 import com.thalmic.myo.scanner.ScanActivity;
+import com.thisisnotajoke.hueyo.base.EventBusUtils;
+import com.thisisnotajoke.hueyo.base.HueyoApplication;
+import com.thisisnotajoke.hueyo.hue.HueAuthEvent;
+import com.thisisnotajoke.hueyo.hue.HueEvent;
+import com.thisisnotajoke.hueyo.myo.MyoEvent;
+import com.thisisnotajoke.hueyo.myo.PoseConsumer;
+import com.thisisnotajoke.hueyo.myo.PoseEvent;
 
 import java.util.List;
 
@@ -29,7 +36,6 @@ public class HueyoService extends Service {
     private static final String TAG = "HueyoService";
     private final IBinder mBinder = new LocalBinder();
 
-    private PoseConsumer mPoseConsumer;
     private int mSelectedLight;
 
     @Inject
@@ -40,6 +46,9 @@ public class HueyoService extends Service {
 
     @Inject
     protected Hub mHub;
+
+    @Inject
+    protected PoseConsumer mPoseConsumer;
 
     public class LocalBinder extends Binder {
         HueyoService getService() {
@@ -195,7 +204,6 @@ public class HueyoService extends Service {
             Log.i(TAG, "Hue bridge connected");
             EventBusUtils.postSticky(new HueEvent(b, true));
             loadSelectedLight(b);
-            mPoseConsumer = new PoseConsumer(mHue, mSelectedLight);
         }
 
         @Override
@@ -209,7 +217,7 @@ public class HueyoService extends Service {
         public void onAccessPointsFound(List<PHAccessPoint> accessPoints) {
             Log.w(TAG, "Access Points Found. " + accessPoints.size());
 
-            if (accessPoints != null && accessPoints.size() > 0) {
+            if (accessPoints.size() > 0) {
                 mHue.getAccessPointsFound().clear();
                 mHue.getAccessPointsFound().addAll(accessPoints);
                 PHAccessPoint accessPoint = accessPoints.get(0);

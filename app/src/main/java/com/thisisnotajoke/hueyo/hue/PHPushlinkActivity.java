@@ -1,9 +1,8 @@
-package com.thisisnotajoke.hueyo;
+package com.thisisnotajoke.hueyo.hue;
 
 
 import java.util.List;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -14,20 +13,20 @@ import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.philips.lighting.hue.sdk.PHMessageType;
 import com.philips.lighting.hue.sdk.PHSDKListener;
 import com.philips.lighting.model.PHBridge;
+import com.thisisnotajoke.hueyo.base.BaseActivity;
+import com.thisisnotajoke.hueyo.base.EventBusUtils;
+import com.thisisnotajoke.hueyo.R;
 
-/**
- * Activity which gives hint for manual pushlink. needs to add <activity
- * android:theme="@android:style/Theme.Dialog" /> in manifest file
- * 
- * @author Stephen O'Reilly
- * 
- */
+import javax.inject.Inject;
 
-public class PHPushlinkActivity extends Activity {
+public class PHPushlinkActivity extends BaseActivity {
     private ProgressBar pbar;
     private static final int MAX_TIME=30;
-    private PHHueSDK phHueSDK;
+
     private boolean isDialogShowing;
+
+    @Inject
+    protected PHHueSDK mHueSDK;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +34,11 @@ public class PHPushlinkActivity extends Activity {
         setContentView(R.layout.pushlink);
         setTitle(R.string.hue_auth_required);
         isDialogShowing=false;
-        phHueSDK = PHHueSDK.getInstance();
-        
+
         pbar = (ProgressBar) findViewById(R.id.countdownPB);
         pbar.setMax(MAX_TIME);
         
-        phHueSDK.getNotificationManager().registerSDKListener(listener);
+        mHueSDK.getNotificationManager().registerSDKListener(listener);
         EventBusUtils.register(this);
     }
 
@@ -48,7 +46,7 @@ public class PHPushlinkActivity extends Activity {
     protected void onStop(){
         super.onStop();
         EventBusUtils.unregister(this);
-        phHueSDK.getNotificationManager().unregisterSDKListener(listener);
+        mHueSDK.getNotificationManager().unregisterSDKListener(listener);
     }
 
     public void onEvent(HueEvent e){

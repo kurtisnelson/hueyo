@@ -1,4 +1,4 @@
-package com.thisisnotajoke.hueyo;
+package com.thisisnotajoke.hueyo.base;
 
 import de.greenrobot.event.EventBus;
 

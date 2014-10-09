@@ -1,4 +1,4 @@
-package com.thisisnotajoke.hueyo;
+package com.thisisnotajoke.hueyo.myo;
 
 import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.philips.lighting.model.PHLight;
@@ -6,17 +6,15 @@ import com.philips.lighting.model.PHLightState;
 import com.thalmic.myo.Myo;
 import com.thalmic.myo.Pose;
 import com.thalmic.myo.Quaternion;
+import com.thisisnotajoke.hueyo.base.EventBusUtils;
 
 public class PoseConsumer {
     private final PHHueSDK mHue;
-    private final int mSelectedLight;
     private boolean mEnabled = false;
     private boolean mPower = true;
-    private boolean mEffects = false;
 
-    public PoseConsumer(PHHueSDK hue, int selectedLight) {
+    public PoseConsumer(PHHueSDK hue) {
         mHue = hue;
-        mSelectedLight = selectedLight;
     }
 
     public void eat(Pose pose) {

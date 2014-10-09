@@ -1,8 +1,10 @@
-package com.thisisnotajoke.hueyo;
+package com.thisisnotajoke.hueyo.base;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+
+import com.thisisnotajoke.hueyo.R;
 
 public abstract class SingleFragmentActivity extends FragmentActivity {
     protected abstract Fragment getFragment();
