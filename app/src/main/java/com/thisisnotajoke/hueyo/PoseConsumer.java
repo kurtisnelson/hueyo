@@ -1,7 +1,5 @@
 package com.thisisnotajoke.hueyo;
 
-import android.util.Log;
-
 import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.philips.lighting.model.PHLight;
 import com.philips.lighting.model.PHLightState;
@@ -23,15 +21,15 @@ public class PoseConsumer {
 
     public void eat(Pose pose) {
         PHLightState state = new PHLightState();
-        switch (pose.getType()) {
-            case WAVE_IN:
+        switch (pose) {
+            case FIST:
                 if(mEnabled) {
                     state.setOn(mPower);
                     mPower = !mPower;
                     EventBusUtils.post(Myo.VibrationType.SHORT);
                 }
                 break;
-            case FIST:
+            case THUMB_TO_PINKY:
                 if(!mEnabled) {
                     state.setAlertMode(PHLight.PHLightAlertMode.ALERT_SELECT);
                     EventBusUtils.post(Myo.VibrationType.LONG);
@@ -41,9 +39,7 @@ public class PoseConsumer {
                     mEnabled = false;
                 }
                 break;
-            case WAVE_OUT:
-            case TWIST_IN:
-            case NONE:
+            default:
                 return;
         }
         mHue.getSelectedBridge().setLightStateForDefaultGroup(state);

@@ -25,7 +25,7 @@ dependencies {
             url '../../myorepository'
         }
     }
-    compile 'com.android.support:support-v13:18.0.+'
-    compile 'com.thalmic:myosdk:0.2.+@aar'
+    compile 'com.android.support:support-v13:18.0.0'
+    compile 'com.thalmic:myosdk:+@aar'
     compile 'de.greenrobot:eventbus:2.2.1'
 }

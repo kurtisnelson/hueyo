@@ -21,12 +21,6 @@
             android:layout_height="wrap_content"
             android:text="@string/no_paired_myo" />
 
-        <Button
-            android:id="@+id/fragment_status_train"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:enabled="false"
-            android:text="@string/myosdk__title_activity_train" />
     </LinearLayout>
 
     <LinearLayout

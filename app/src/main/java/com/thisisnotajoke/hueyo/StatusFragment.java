@@ -22,7 +22,6 @@ public class StatusFragment extends Fragment {
     private static final String STATE_HUE_NAME = "HueName";
     private String mMyoMac;
     private TextView mMyoAddressView;
-    private Button mTrainButton;
     private StatusView mMyoStatus;
     private StatusView mHueStatus;
     private TextView mHueName;
@@ -40,13 +39,6 @@ public class StatusFragment extends Fragment {
         mMyoStatus = (StatusView) view.findViewById(R.id.fragment_status_myo_status);
         mMyoAddressView = (TextView) view.findViewById(R.id.fragment_status_myo_address);
         mLastCommandView = (TextView) view.findViewById(R.id.fragment_status_last_command);
-        mTrainButton = (Button) view.findViewById(R.id.fragment_status_train);
-        mTrainButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HueyoService.train(getActivity(), mMyoMac);
-            }
-        });
 
         Button stopButton = (Button) view.findViewById(R.id.fragment_status_stop);
         stopButton.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +83,7 @@ public class StatusFragment extends Fragment {
 
     public void onEventMainThread(PoseEvent poseEvent){
         Log.d(TAG, "PoseEvent: " + poseEvent.getPose());
-        if(poseEvent.getPose().getType() != Pose.Type.NONE) {
+        if(poseEvent.getPose() != Pose.REST) {
             mLastCommandView.setText(poseEvent.getPose().toString());
         }
     }
@@ -103,12 +95,10 @@ public class StatusFragment extends Fragment {
         switch (myoEvent.getState()) {
             case CONNECTED:
                 mMyoStatus.setActive(true);
-                mTrainButton.setEnabled(true);
                 setMyoMac(myoEvent.getAddress());
                 break;
             case DISCONNECTED:
                 mMyoStatus.setActive(false);
-                mTrainButton.setEnabled(false);
                 setMyoMac(null);
                 break;
         }

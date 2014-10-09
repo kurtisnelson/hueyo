@@ -19,9 +19,7 @@ import com.thalmic.myo.Hub;
 import com.thalmic.myo.Myo;
 import com.thalmic.myo.Pose;
 import com.thalmic.myo.Quaternion;
-import com.thalmic.myo.Vector3;
 import com.thalmic.myo.scanner.ScanActivity;
-import com.thalmic.myo.trainer.TrainActivity;
 
 import java.util.List;
 
@@ -71,25 +69,12 @@ public class HueyoService extends Service {
         return mBinder;
     }
 
-    public void trainAll(Context context) {
-        for (Myo device : mHub.getConnectedDevices()) {
-            if (device.isConnected())
-                train(context, device.getMacAddress());
-        }
-    }
-
     public void pair() {
        mHub.pairWithAnyMyos(2);
     }
 
     public void pairActivity(Context context) {
         context.startActivity(new Intent(context, ScanActivity.class));
-    }
-
-    public static void train(Context context, String device) {
-        Intent intent = new Intent(context, TrainActivity.class);
-        intent.putExtra(TrainActivity.EXTRA_ADDRESS, device);
-        context.startActivity(intent);
     }
 
     public boolean isHueConnected() {
