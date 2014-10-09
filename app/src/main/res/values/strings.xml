@@ -9,4 +9,5 @@
     <string name="stop">Stop Controller</string>
     <string name="ok">OK</string>
     <string name="lights">Lights</string>
+    <string name="last_command">Last Command:</string>
 </resources>

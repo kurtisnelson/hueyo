@@ -19,9 +19,9 @@ public class StatusView extends ImageView{
     public void setActive(boolean active) {
         mActive = active;
         if(active){
-            setImageResource(android.R.drawable.presence_online);
+            setImageResource(R.drawable.ic_connected);
         }else{
-            setImageResource(android.R.drawable.presence_offline);
+            setImageResource(R.drawable.ic_disconnected);
         }
     }
 

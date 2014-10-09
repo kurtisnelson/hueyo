@@ -7,43 +7,59 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <com.thisisnotajoke.hueyo.StatusView
             android:id="@+id/fragment_status_myo_status"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:padding="5dp"/>
 
         <TextView
             android:id="@+id/fragment_status_myo_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="5dp"
             android:text="@string/no_paired_myo" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <com.thisisnotajoke.hueyo.StatusView
             android:id="@+id/fragment_status_hue_status"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:padding="5dp"/>
 
         <TextView
             android:id="@+id/fragment_status_hue_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="5dp"
             android:text="@string/no_paired_hue" />
     </LinearLayout>
-    <TextView
-        android:id="@+id/fragment_status_last_command"
-        android:text="@string/none"
+
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="@string/last_command"/>
+        <TextView
+            android:id="@+id/fragment_status_last_command"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="@string/none"/>
+        </LinearLayout>
+
 
     <TextView
         android:layout_width="wrap_content"
@@ -51,12 +67,14 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/instructions"
         android:id="@+id/fragment_status_instructions"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:padding="5dp"/>
     <Button
         android:id="@+id/fragment_status_stop"
         android:text="@string/stop"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
 
 
 </LinearLayout>

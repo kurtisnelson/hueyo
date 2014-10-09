@@ -70,7 +70,7 @@ public class HueyoService extends Service {
     }
 
     public void pair() {
-       mHub.pairWithAnyMyos(2);
+       mHub.pairWithAnyMyo();
     }
 
     public void pairActivity(Context context) {
