@@ -7,6 +7,7 @@ import com.thalmic.myo.Hub;
 import com.thalmic.myo.Pose;
 import com.thalmic.myo.Quaternion;
 import com.thisisnotajoke.hueyo.controller.HueyoService;
+import com.thisisnotajoke.hueyo.controller.PHPushlinkActivity;
 import com.thisisnotajoke.hueyo.model.ObservableFactory;
 import com.thisisnotajoke.hueyo.controller.StatusActivity;
 import com.thisisnotajoke.hueyo.model.PreferenceUtil;
@@ -21,6 +22,7 @@ import rx.Observable;
 @Module(
         injects = {
             StatusActivity.class,
+            PHPushlinkActivity.class,
             HueyoService.class,
         }
         , complete = true)

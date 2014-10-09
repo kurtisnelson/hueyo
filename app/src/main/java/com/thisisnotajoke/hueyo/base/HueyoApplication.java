@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.crittercism.app.Crittercism;
+import com.thisisnotajoke.hueyo.BuildConfig;
 
 import dagger.ObjectGraph;
 
@@ -14,7 +15,8 @@ public class HueyoApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Crittercism.initialize(getApplicationContext(), "5436d09eb573f1582b000006");
+        if(!BuildConfig.DEBUG)
+            Crittercism.initialize(getApplicationContext(), "5436d09eb573f1582b000006");
         mObjectGraph = ObjectGraph.create(new HueyoApplicationModule(this));
     }
 

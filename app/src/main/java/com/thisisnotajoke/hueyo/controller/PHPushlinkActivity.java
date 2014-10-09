@@ -86,7 +86,6 @@ public class PHPushlinkActivity extends BaseActivity {
                 incrementProgress();
             }
             else if (code == PHMessageType.PUSHLINK_AUTHENTICATION_FAILED) {
- //               PHWizardAlertDialog.getInstance().closeProgressDialog();
                 incrementProgress();
 
                 if (!isDialogShowing) {
@@ -97,11 +96,7 @@ public class PHPushlinkActivity extends BaseActivity {
                         public void run() {
                             AlertDialog.Builder builder = new AlertDialog.Builder(PHPushlinkActivity.this);
                             builder.setMessage(message).setNeutralButton(R.string.ok,
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            finish();
-                                        }
-                                    });
+                                    (dialog, id) -> finish());
 
                             builder.create();
                             builder.show();

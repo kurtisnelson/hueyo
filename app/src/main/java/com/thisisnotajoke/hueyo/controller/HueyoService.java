@@ -4,6 +4,8 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -48,6 +50,7 @@ public class HueyoService extends Service {
 
     @Inject
     protected PoseConsumer mPoseConsumer;
+    private Handler mHandler;
 
     public class LocalBinder extends Binder {
         HueyoService getService() {
@@ -58,8 +61,12 @@ public class HueyoService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        HueyoApplication.get(this).inject(this);
-        EventBusUtils.register(this);
+        HandlerThread thread = new HandlerThread("HueyoService");
+        thread.start();
+        mHandler = new Handler(thread.getLooper());
+
+        HueyoApplication.get(HueyoService.this).inject(HueyoService.this);
+        EventBusUtils.register(HueyoService.this);
 
         createMyo();
         createHue();
@@ -77,6 +84,7 @@ public class HueyoService extends Service {
         destroyMyo();
         destroyHue();
         mPoseConsumer = null;
+        mHandler.getLooper().quit();
         super.onDestroy();
     }
 
@@ -86,29 +94,15 @@ public class HueyoService extends Service {
     }
 
     public void pair() {
-       mHub.pairWithAnyMyo();
+        mHub.pairWithAnyMyo();
     }
 
     public void pairActivity(Context context) {
         context.startActivity(new Intent(context, ScanActivity.class));
     }
 
-    public boolean isHueConnected() {
-        if(mHue != null){
-            return mHue.getSelectedBridge() != null;
-        }
-        return false;
-    }
-
-    public boolean isMyoConnected() {
-        if(mHub != null){
-            return !mHub.getConnectedDevices().isEmpty();
-        }
-        return false;
-    }
-
     public void onEvent(Myo.VibrationType event) {
-        for(Myo device : mHub.getConnectedDevices()){
+        for (Myo device : mHub.getConnectedDevices()) {
             device.vibrate(event);
         }
     }
@@ -152,7 +146,6 @@ public class HueyoService extends Service {
     }
 
 
-
     private void destroyMyo() {
         mPoseConsumer.disconnect();
         mHub.removeListener(mMyoListener);
@@ -165,8 +158,8 @@ public class HueyoService extends Service {
         public void onConnect(Myo myo, long timestamp) {
             EventBusUtils.postSticky(new MyoEvent(myo));
             mPoseConsumer.disconnect();
-            mPoseConsumer.consumePoses();
-            mPoseConsumer.consumeOrientation();
+            mPoseConsumer.consumePoses(mHandler);
+            mPoseConsumer.consumeOrientation(mHandler);
         }
 
         @Override
@@ -196,7 +189,6 @@ public class HueyoService extends Service {
             mPrefUtils.setHueUsername(b.getResourceCache().getBridgeConfiguration().getUsername());
             Log.i(TAG, "Hue bridge connected");
             EventBusUtils.postSticky(new HueEvent(b, true));
-            loadSelectedLight(b);
         }
 
         @Override
@@ -208,6 +200,7 @@ public class HueyoService extends Service {
 
         @Override
         public void onAccessPointsFound(List<PHAccessPoint> accessPoints) {
+            if (accessPoints == null) return;
             Log.w(TAG, "Access Points Found. " + accessPoints.size());
 
             if (accessPoints.size() > 0) {
@@ -239,7 +232,6 @@ public class HueyoService extends Service {
         @Override
         public void onConnectionResumed(PHBridge bridge) {
             EventBusUtils.postSticky(new HueEvent(bridge, true));
-            loadSelectedLight(bridge);
         }
 
         @Override
@@ -248,13 +240,4 @@ public class HueyoService extends Service {
         }
 
     };
-
-    private int loadSelectedLight(PHBridge bridge) {
-        int selectedLight = mPrefUtils.getSelectedLight();
-        if(selectedLight >= bridge.getResourceCache().getAllLights().size()){
-            selectedLight = 0;
-            mPrefUtils.setSelectedLight(0);
-        }
-        return selectedLight;
-    }
 }
