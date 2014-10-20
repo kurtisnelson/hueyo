@@ -1,9 +1,9 @@
 package com.thisisnotajoke.hueyo.base;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 
-public abstract class BaseActivity extends Activity {
+public abstract class BaseActivity extends ActionBarActivity {
 
     public String TAG = getClass().getSimpleName();
 
