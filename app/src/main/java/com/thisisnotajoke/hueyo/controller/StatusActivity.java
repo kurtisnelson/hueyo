@@ -14,10 +14,11 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import com.thisisnotajoke.hueyo.R;
+import com.thisisnotajoke.hueyo.base.BaseActivity;
 import com.thisisnotajoke.hueyo.base.EventBusUtils;
 import com.thisisnotajoke.hueyo.model.hue.HueEvent;
 
-public class StatusActivity extends FragmentActivity {
+public class StatusActivity extends BaseActivity {
     private static final String STATE_LIGHTS = "LightsEnabled";
     private boolean mIsBound;
     private HueyoService mBoundService;
