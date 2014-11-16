@@ -94,7 +94,7 @@ public class HueyoService extends Service {
     }
 
     public void pair() {
-        mHub.pairWithAnyMyo();
+        mHub.attachToAdjacentMyo();
     }
 
     public void pairActivity(Context context) {
