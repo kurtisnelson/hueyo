@@ -3,13 +3,13 @@ apply plugin: 'retrolambda'
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 21
-        versionCode 2
-        versionName "1.1"
+        versionCode 3
+        versionName "1.2"
     }
     buildTypes {
         release {
@@ -30,7 +30,7 @@ dependencies {
             url '../../myorepository'
         }
     }
-    compile 'com.android.support:appcompat-v7:21.0.0'
+    compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.android.support:cardview-v7:21.0.0'
     compile 'com.thalmic:myosdk:+@aar'
     compile 'de.greenrobot:eventbus:2.2.1'

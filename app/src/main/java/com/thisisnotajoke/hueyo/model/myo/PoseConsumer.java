@@ -19,7 +19,6 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class PoseConsumer {
     private static final String TAG = "PoseConsumer";
-    private boolean mEnabled = false;
     private boolean mPower = true;
 
     private final PHHueSDK mHue;
@@ -28,7 +27,6 @@ public class PoseConsumer {
 
     private Subscription mOrientation;
     private Subscription mFist;
-    private Subscription mLock;
 
     public PoseConsumer(PHHueSDK hue, Observable<Pose> poseObservable, Observable<Quaternion> orientationObservable) {
         mHue = hue;
@@ -40,34 +38,13 @@ public class PoseConsumer {
         mFist = mPoseObservable
                 .subscribeOn(AndroidSchedulers.handlerThread(handler))
                 .filter(it -> it == Pose.FIST)
-                .skipWhile(it -> !mEnabled)
                 .subscribe(
                         pose -> {
-                            if(!mEnabled) return;
                             Log.i(TAG, "Toggling power");
                             PHLightState state = new PHLightState();
                             state.setOn(mPower);
                             mPower = !mPower;
                             mHue.getSelectedBridge().setLightStateForDefaultGroup(state);
-                        }
-                );
-
-        mLock = mPoseObservable
-                .subscribeOn(AndroidSchedulers.handlerThread(handler))
-                .filter(it -> it == Pose.FINGERS_SPREAD)
-                .skipWhile(it -> mHue == null || mHue.getSelectedBridge() == null)
-                .subscribe(
-                        pose -> {
-                            Log.i(TAG, "Toggling enabled to " + !mEnabled);
-                            if(!mEnabled) {
-                                PHLightState state = new PHLightState();
-                                state.setAlertMode(PHLight.PHLightAlertMode.ALERT_SELECT);
-                                EventBusUtils.post(Myo.VibrationType.SHORT);
-                                mHue.getSelectedBridge().setLightStateForDefaultGroup(state);
-                            }else{
-                                EventBusUtils.post(Myo.VibrationType.SHORT);
-                            }
-                            mEnabled = !mEnabled;
                         }
                 );
     }
@@ -78,7 +55,6 @@ public class PoseConsumer {
                 .sample(800, TimeUnit.MILLISECONDS)
                 .subscribe(
                         quat -> {
-                            if(!mEnabled) return;
                             PHLightState state = new PHLightState();
 
                             double pitch = (Quaternion.pitch(quat) + 1.5) / 3.0;
@@ -106,6 +82,5 @@ public class PoseConsumer {
     public void disconnect() {
         if(mOrientation != null) mOrientation.unsubscribe();
         if(mFist != null) mFist.unsubscribe();
-        if(mLock != null) mLock.unsubscribe();
     }
 }

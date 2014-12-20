@@ -13,6 +13,7 @@ import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.philips.lighting.hue.sdk.PHMessageType;
 import com.philips.lighting.hue.sdk.PHSDKListener;
 import com.philips.lighting.model.PHBridge;
+import com.philips.lighting.model.PHHueParsingError;
 import com.thisisnotajoke.hueyo.base.BaseActivity;
 import com.thisisnotajoke.hueyo.base.EventBusUtils;
 import com.thisisnotajoke.hueyo.R;
@@ -69,13 +70,16 @@ public class PHPushlinkActivity extends BaseActivity {
         public void onAuthenticationRequired(PHAccessPoint arg0) {}
 
         @Override
+        public void onCacheUpdated(List<Integer> integers, PHBridge phBridge) {}
+
+        @Override
         public void onBridgeConnected(PHBridge arg0) {}
 
         @Override
-        public void onCacheUpdated(int arg0, PHBridge arg1) {}
+        public void onConnectionLost(PHAccessPoint arg0) {}
 
         @Override
-        public void onConnectionLost(PHAccessPoint arg0) {}
+        public void onParsingErrors(List<PHHueParsingError> phHueParsingErrors) {}
 
         @Override
         public void onConnectionResumed(PHBridge arg0) {}

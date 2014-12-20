@@ -15,6 +15,7 @@ import com.philips.lighting.hue.sdk.PHHueSDK;
 import com.philips.lighting.hue.sdk.PHMessageType;
 import com.philips.lighting.hue.sdk.PHSDKListener;
 import com.philips.lighting.model.PHBridge;
+import com.philips.lighting.model.PHHueParsingError;
 import com.thalmic.myo.AbstractDeviceListener;
 import com.thalmic.myo.DeviceListener;
 import com.thalmic.myo.Hub;
@@ -175,9 +176,14 @@ public class HueyoService extends Service {
     };
 
     public PHSDKListener mHueListener = new PHSDKListener() {
+        @Override
+        public void onCacheUpdated(List<Integer> integers, PHBridge phBridge) {
+
+        }
 
         @Override
-        public void onCacheUpdated(int flags, PHBridge bridge) {
+        public void onParsingErrors(List<PHHueParsingError> phHueParsingErrors) {
+
         }
 
         @Override
