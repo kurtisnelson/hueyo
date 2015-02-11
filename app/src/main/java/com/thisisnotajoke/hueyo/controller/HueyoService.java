@@ -1,5 +1,8 @@
 package com.thisisnotajoke.hueyo.controller;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -32,6 +35,7 @@ import com.thisisnotajoke.hueyo.model.myo.MyoEvent;
 import com.thisisnotajoke.hueyo.model.myo.PoseConsumer;
 import com.thisisnotajoke.hueyo.model.myo.PoseEvent;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -78,7 +82,7 @@ public class HueyoService extends Service {
 	void invokeMethod(Method method, Object[] args) {
 	    try {
 	        method.invoke(this, args);
-	    } catch (InvocationTargetException e) {
+	    } catch (java.lang.reflect.InvocationTargetException e) {
 	        // Should not happen.
 	        Log.w(TAG, "Unable to invoke method", e);
 	    } catch (IllegalAccessException e) {
