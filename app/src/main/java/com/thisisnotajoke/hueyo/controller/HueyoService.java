@@ -42,7 +42,7 @@ public class HueyoService extends Service {
     private static final String TAG = "HueyoService";
     private static final int ONGOING_NOTIFICATION_ID = 101;
     private final IBinder mBinder = new LocalBinder();
-		
+
     @Inject
     protected PreferenceUtil mPrefUtils;
 
@@ -61,7 +61,7 @@ public class HueyoService extends Service {
             return HueyoService.this;
         }
     }
-	
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -78,8 +78,8 @@ public class HueyoService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-		Intent notificationIntent = new Intent(this, HueyoService.class);
-		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        Intent notificationIntent = new Intent(this, HueyoService.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         Notification notification = new Notification.Builder(getApplicationContext())
                 .setContentTitle(getText(R.string.notification_title))
                 .setContentText(getText(R.string.notification_message))
@@ -88,8 +88,8 @@ public class HueyoService extends Service {
                 .setOngoing(true)
                 .build();
         notification.flags |= Notification.FLAG_FOREGROUND_SERVICE;
-		startForeground(ONGOING_NOTIFICATION_ID, notification);
-		
+        startForeground(ONGOING_NOTIFICATION_ID, notification);
+
         return START_STICKY;
     }
 
@@ -97,8 +97,8 @@ public class HueyoService extends Service {
     public void onDestroy() {
         EventBusUtils.unregister(this);
 
-		// Make sure our notification is gone.
-		stopForeground(true);
+        // Make sure our notification is gone.
+        stopForeground(true);
 
         destroyMyo();
         destroyHue();
