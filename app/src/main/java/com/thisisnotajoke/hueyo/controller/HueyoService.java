@@ -9,6 +9,7 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.philips.lighting.hue.sdk.PHAccessPoint;
@@ -79,13 +80,16 @@ public class HueyoService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-		Notification notification = new Notification(R.drawable.ic_launcher, getText(R.string.ticker_text),
-		        System.currentTimeMillis());
 		Intent notificationIntent = new Intent(this, HueyoService.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-		notification.setLatestEventInfo(this, getText(R.string.notification_title),
-		        getText(R.string.notification_message), pendingIntent);
+        Notification notification = new Notification.Builder(getApplicationContext())
+                .setContentTitle(getText(R.string.notification_title))
+                .setContentText(getText(R.string.notification_message))
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentIntent(pendingIntent)
+                .setOngoing(true)
+                .build();
+        notification.flags |= Notification.FLAG_FOREGROUND_SERVICE;
 		startForeground(ONGOING_NOTIFICATION_ID, notification);
 		
         return START_STICKY;
