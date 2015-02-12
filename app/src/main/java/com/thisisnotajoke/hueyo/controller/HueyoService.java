@@ -9,7 +9,6 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.philips.lighting.hue.sdk.PHAccessPoint;
@@ -66,7 +65,6 @@ public class HueyoService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-		
         HandlerThread thread = new HandlerThread("HueyoService");
         thread.start();
         mHandler = new Handler(thread.getLooper());
@@ -101,7 +99,7 @@ public class HueyoService extends Service {
 
 		// Make sure our notification is gone.
 		stopForeground(true);
-		
+
         destroyMyo();
         destroyHue();
         mPoseConsumer = null;
