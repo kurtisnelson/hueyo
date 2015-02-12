@@ -10,7 +10,7 @@
     <string name="ok">OK</string>
     <string name="lights">Lights</string>
     <string name="last_command">Last Command:</string>
-	<string name="ticker_text">Hueyo</string>
-	<string name="notification_title">Hueyo</string>
-	<string name="notification_message">lights engaged</string>
+    <string name="ticker_text">Hueyo</string>
+    <string name="notification_title">Hueyo</string>
+    <string name="notification_message">lights engaged</string>
 </resources>
