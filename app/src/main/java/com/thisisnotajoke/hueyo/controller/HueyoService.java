@@ -40,7 +40,7 @@ import javax.inject.Inject;
 
 public class HueyoService extends Service {
     private static final String TAG = "HueyoService";
-	private static final int ONGOING_NOTIFICATION_ID = 101;
+    private static final int ONGOING_NOTIFICATION_ID = 101;
     private final IBinder mBinder = new LocalBinder();
 		
     @Inject
