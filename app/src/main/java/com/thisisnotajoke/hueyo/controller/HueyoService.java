@@ -1,5 +1,7 @@
 package com.thisisnotajoke.hueyo.controller;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -38,6 +40,7 @@ import javax.inject.Inject;
 
 public class HueyoService extends Service {
     private static final String TAG = "HueyoService";
+    private static final int ONGOING_NOTIFICATION_ID = 101;
     private final IBinder mBinder = new LocalBinder();
 
     @Inject
@@ -75,12 +78,27 @@ public class HueyoService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Intent notificationIntent = new Intent(this, HueyoService.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        Notification notification = new Notification.Builder(getApplicationContext())
+                .setContentTitle(getText(R.string.notification_title))
+                .setContentText(getText(R.string.notification_message))
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentIntent(pendingIntent)
+                .setOngoing(true)
+                .build();
+        notification.flags |= Notification.FLAG_FOREGROUND_SERVICE;
+        startForeground(ONGOING_NOTIFICATION_ID, notification);
+
         return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
         EventBusUtils.unregister(this);
+
+        // Make sure our notification is gone.
+        stopForeground(true);
 
         destroyMyo();
         destroyHue();
